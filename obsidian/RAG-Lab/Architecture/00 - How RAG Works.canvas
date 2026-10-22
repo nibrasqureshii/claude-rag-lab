@@ -1,0 +1,33 @@
+{
+	"nodes":[
+		{"id":"n-documents","type":"text","text":"# Documents\nMarkdown files in `knowledge/` (fictional Acme Robotics company docs)","x":-200,"y":-1060,"width":377,"height":134},
+		{"id":"n-chunking","type":"text","text":"# Chunking\nSplit each document into overlapping word-based chunks. See [[chunking]].","x":-200,"y":-881,"width":377,"height":156},
+		{"id":"n-chroma","type":"text","text":"# Chroma\nLocal vector database. Stores vectors + metadata. Does NOT generate answers.","x":-200,"y":-524,"width":377,"height":112},
+		{"id":"n-retrieval","type":"text","text":"# Retrieval\nQuestion -> query embedding -> vector search -> Top-K -> threshold. See [[retrieval]].","x":-200,"y":-345,"width":377,"height":112},
+		{"id":"n-prompt","type":"text","text":"# Prompt\nRetrieved chunks + question assembled into one exact string. See [[prompt-construction]].","x":-200,"y":-167,"width":377,"height":112},
+		{"id":"n-claude","type":"text","text":"# Claude\nGenerates the final answer from ONLY the assembled prompt. Never touches Chroma directly.","x":-200,"y":12,"width":377,"height":112},
+		{"id":"n-answer","type":"text","text":"# Answer\nGrounded response + cited sources, shown to the user with full traceability.","x":-200,"y":191,"width":377,"height":112},
+		{"id":"n-branch-chunking","type":"text","text":"## Why chunking?\nRetrieval operates on whatever units we chose to create. Too big = blended meaning. Too small = lost context. See [[chunking]].","x":507,"y":-881,"width":353,"height":235},
+		{"id":"n-branch-similarity","type":"text","text":"## Similarity search\nCompares vector distance, not word overlap. A score is closeness, NOT a probability. See [[vector-search]].","x":507,"y":-524,"width":353,"height":156},
+		{"id":"n-branch-topk","type":"text","text":"## Top-K\nMore chunks can raise recall but dilute focus with irrelevant context. Tune it in Experiments -> Top-K.","x":507,"y":-345,"width":353,"height":156},
+		{"id":"n-branch-context","type":"text","text":"## Context\nOnly the chunks that pass Top-K (and the threshold) become part of the prompt. See Experiment D: Remove Context.","x":507,"y":-167,"width":353,"height":156},
+		{"id":"n-branch-llm","type":"text","text":"## LLM (Claude)\nGeneration only. If context doesn't contain the answer, Claude should say so rather than guess. See [[hallucination]].","x":507,"y":12,"width":353,"height":179},
+		{"id":"n-central","type":"text","text":"**Your code retrieves the knowledge.\nClaude generates the answer.**","x":-200,"y":369,"width":377,"height":101},
+		{"id":"n-embeddings","type":"text","text":"# Embeddings\nEach chunk -> a 384-dim vector, via a local sentence-transformers model. See [[embeddings]].","x":-200,"y":-703,"width":377,"height":112}
+	],
+	"edges":[
+		{"id":"e1","fromNode":"n-documents","fromSide":"bottom","toNode":"n-chunking","toSide":"top"},
+		{"id":"e2","fromNode":"n-chunking","fromSide":"bottom","toNode":"n-embeddings","toSide":"top"},
+		{"id":"e3","fromNode":"n-embeddings","fromSide":"bottom","toNode":"n-chroma","toSide":"top"},
+		{"id":"e4","fromNode":"n-chroma","fromSide":"bottom","toNode":"n-retrieval","toSide":"top"},
+		{"id":"e5","fromNode":"n-retrieval","fromSide":"bottom","toNode":"n-prompt","toSide":"top"},
+		{"id":"e6","fromNode":"n-prompt","fromSide":"bottom","toNode":"n-claude","toSide":"top"},
+		{"id":"e7","fromNode":"n-claude","fromSide":"bottom","toNode":"n-answer","toSide":"top"},
+		{"id":"e8","fromNode":"n-answer","fromSide":"bottom","toNode":"n-central","toSide":"top"},
+		{"id":"e9","fromNode":"n-chunking","fromSide":"right","toNode":"n-branch-chunking","toSide":"left"},
+		{"id":"e10","fromNode":"n-chroma","fromSide":"right","toNode":"n-branch-similarity","toSide":"left"},
+		{"id":"e11","fromNode":"n-retrieval","fromSide":"right","toNode":"n-branch-topk","toSide":"left"},
+		{"id":"e12","fromNode":"n-prompt","fromSide":"right","toNode":"n-branch-context","toSide":"left"},
+		{"id":"e13","fromNode":"n-claude","fromSide":"right","toNode":"n-branch-llm","toSide":"left"}
+	]
+}
